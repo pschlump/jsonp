@@ -63,6 +63,7 @@ func Test_Exists(t *testing.T) {
 	if s != "callback000({\"bob\":\"bob\"}\n);" {
 		t.Errorf("Expected JSONp callback, got >%s< \n", s)
 	}
+
 	// TODO: check that headers are set corectly
 
 	// req, _ := http.NewRequest("GET", "http://localhost:8204/api/status?id=xyzzy", nil)		// Test requries a server at this locaiton

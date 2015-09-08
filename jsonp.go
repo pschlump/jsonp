@@ -1,6 +1,7 @@
 package jsonp
 
 // Copyright (C) Philip Schlump, 2013-2015.
+// License in ./LICENSE file - MIT.
 // Version: 1.0.0
 
 import (
