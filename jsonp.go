@@ -32,8 +32,14 @@ func SetJsonPrefix(p string) {
 // If it is not a JSONp call (no "callback" parameter) then add JSON_Prefix to the beginning.
 func JsonP(s string, res http.ResponseWriter, req *http.Request) string {
 
-	u, _ := url.ParseRequestURI(req.RequestURI)
-	m, _ := url.ParseQuery(u.RawQuery)
+	u, err := url.ParseRequestURI(req.RequestURI)
+	if err != nil {
+		return JSON_Prefix + s
+	}
+	m, err := url.ParseQuery(u.RawQuery)
+	if err != nil {
+		return JSON_Prefix + s
+	}
 	callback := m.Get("callback")
 	if callback != "" {
 		res.Header().Set("Content-Type", "application/javascript")
