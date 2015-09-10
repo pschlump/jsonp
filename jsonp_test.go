@@ -64,12 +64,37 @@ func Test_Exists(t *testing.T) {
 		t.Errorf("Expected JSONp callback, got >%s< \n", s)
 	}
 
-	// TODO: check that headers are set corectly
+	res1 := TestAAAResponseWriter{
+		hdr:    make(http.Header),
+		buf:    make([]byte, 0, 200),
+		status: 0,
+	}
 
-	// req, _ := http.NewRequest("GET", "http://localhost:8204/api/status?id=xyzzy", nil)		// Test requries a server at this locaiton
-	req, _ := http.NewRequest("GET", "http://google.com/", nil)
-	_ = req
+	req := http.Request{
+		Method:     "GET",
+		Proto:      "HTTP/1.1",
+		ProtoMajor: 1,
+		ProtoMinor: 1,
+		RemoteAddr: "[::1]:64770",
+		RequestURI: "/api/status?callback=callback12323123123",
+		Host:       "localhost:8204",
+		Header:     make(http.Header),
+	}
 
-	// TODO: func JsonP(s string, res http.ResponseWriter, req *http.Request) string {
+	u := JsonP(`{"status":"success"}`, res1, &req)
+	// Check return value
+	// fmt.Printf("s= ->%s<-\n", u)
+	if u != `callback12323123123({"status":"success"});` {
+		t.Errorf("Expected JSONp callback, got >%s< \n", u)
+	}
+	// check that headers are set corectly
+	// fmt.Printf("hdr= ->%s<-\n", res1.hdr)
+	if _, ok := res1.hdr["Content-Type"]; !ok {
+		t.Errorf("Expected to have a Content-Type header set , but did not find it.")
+	} else {
+		if v := res1.hdr["Content-Type"]; len(v) > 0 && v[0] != "application/javascript" {
+			t.Errorf("Expected to have a Content-Type header set to appliation/javascript but got %s instead\n", v)
+		}
+	}
 
 }
